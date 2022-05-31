@@ -1,0 +1,1 @@
+from .controller.document_controller import document_blueprint
