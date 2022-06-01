@@ -9,9 +9,11 @@ app = Flask(__name__)
 
 url_prefix = "/api/v1"
 
+logger.debug("Checking Google Credentials")
+init_google_vision()
+
 logger.debug("Loading Blueprints")
 app.register_blueprint(document_blueprint, url_prefix=url_prefix)
 
 if __name__ == "__main__":
-    init_google_vision()
     app.run()
