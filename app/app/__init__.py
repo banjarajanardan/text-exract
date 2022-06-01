@@ -2,6 +2,7 @@ from flask import Flask
 from loguru import logger
 
 from .main import document_blueprint
+from .main.services.google_service import init_google_vision
 
 logger.debug("Starting Server")
 app = Flask(__name__)
@@ -12,4 +13,5 @@ logger.debug("Loading Blueprints")
 app.register_blueprint(document_blueprint, url_prefix=url_prefix)
 
 if __name__ == "__main__":
+    init_google_vision()
     app.run()

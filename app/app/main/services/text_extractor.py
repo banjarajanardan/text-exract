@@ -1,9 +1,10 @@
+import io
 import os
 import re
 
-import easyocr
 import fitz
 from docx import Document
+from google.cloud import vision
 from loguru import logger
 
 FILE_TYPE_MAP = {".pdf": "pdf", ".docx": "docx", ".txt": "txt"}
@@ -34,10 +35,21 @@ class TextExtractor:
 
     def _image_extract(self):
         logger.info("image parsing")
-        reader = easyocr.Reader(["en"])
-        text_details = reader.readtext(self.file_path)
-        self.text = self._extract_text(text_details, 1)
-
+        image = io.open(self.file_path, "rb").read()
+        image = vision.Image(content=image)
+        client = vision.ImageAnnotatorClient()
+        text = client.document_text_detection(image=image)
+        texts = []
+        for t in text.text_annotations:
+            temp = {}
+            temp["text"] = t.description
+            temp["x0"] = t.bounding_poly.vertices[0].x
+            temp["y0"] = t.bounding_poly.vertices[0].y
+            texts.append(temp)
+        texts = sorted(texts,key=lambda i:(i["y0"],i["x0"]))
+        texts = [i.get("text") for i in texts]
+        self.text = " ".join(texts)
+        
     def _pdf_extract(self):
         logger.info("pdf parsing")
         doc = fitz.open(self.file_path)
