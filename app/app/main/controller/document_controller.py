@@ -59,4 +59,4 @@ def health():
         "status_code": 200,
         "message": "successful request",
     }
-    return jsonify(health_status)
+    return make_response(health_status)
