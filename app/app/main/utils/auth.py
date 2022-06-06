@@ -25,6 +25,7 @@ def abort_json(status_code=400, error="", message="", status="fail"):
 
     logger.error(f"| {error} || {message} || {status_code} |")
     response.status_code = status_code
+    response.headers["Access-Control-Allow-Origin"] = "*"
     abort(response)
 
 
@@ -38,6 +39,7 @@ def make_response(data="", status_code=200, error="", message="", status="succes
             "status_code": status_code,
         }
     )
+    response.headers["Access-Control-Allow-Origin"] = "*"
     logger.info(f"| {error} || {message} || {status_code} |")
 
     return response
